@@ -1,6 +1,8 @@
 import faker from 'faker';
+import uuidv4 from 'uuid/v4';
 import { GraphQLServer } from 'graphql-yoga';
 
+// I'm seeding data so I can be fancy!
 const users = [...Array(5)].map(() => ({
   id: faker.random.uuid(),
   name: faker.name.firstName(),
@@ -35,6 +37,10 @@ const typeDefs = `
     users(query: String): [User!]!
     posts(query: String): [Post!]!
     comments: [Comment!]!
+  }
+
+  type Mutation {
+    createUser(name: String!, email: String!, age: Int): User!
   }
 
   type User {
@@ -107,6 +113,26 @@ const resolvers = {
     },
     comments(parent, args, ctx, info) {
       return comments;
+    },
+  },
+  Mutation: {
+    createUser(parent, args, ctx, info) {
+      const emailTaken = users.some(user => user.email === args.email);
+
+      if(emailTaken) {
+        throw new Error("Email address is taken"); 
+      }
+
+      const user = {
+        id: uuidv4(),
+        name: args.name,
+        email: args.email,
+        age: args.age,
+      };
+
+      users.push(user);
+
+      return user;
     },
   },
   Comment: {
