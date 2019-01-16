@@ -91,7 +91,6 @@ const typeDefs = `
   }
 `;
 
-
 // Resolvers
 const resolvers = {
   Query: {
@@ -139,8 +138,8 @@ const resolvers = {
     createUser(parent, args, ctx, info) {
       const emailTaken = users.some(user => user.email === args.data.email);
 
-      if(emailTaken) {
-        throw new Error("Email address is taken"); 
+      if (emailTaken) {
+        throw new Error('Email address is taken');
       }
 
       const user = {
@@ -178,7 +177,7 @@ const resolvers = {
       const userExists = users.some(user => user.id === args.data.author);
 
       if (!userExists) {
-        throw new Error ("User not found");
+        throw new Error('User not found');
       }
 
       const post = {
@@ -192,10 +191,12 @@ const resolvers = {
     },
     createComment(parent, args, ctx, info) {
       const userExists = users.some(user => user.id === args.data.author);
-      const postExists = posts.some(post => post.id === args.data.post && post.published);
+      const postExists = posts.some(
+        post => post.id === args.data.post && post.published,
+      );
 
       if (!userExists || !postExists) {
-        throw new Error ("User or Post not found");
+        throw new Error('User or Post not found');
       }
 
       const comment = {
